@@ -1,0 +1,47 @@
+.wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  /* The bubble */
+  .tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 0.5rem);
+    z-index: 40;
+  
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.6rem;
+    background: var(--tooltip-bg);
+    color: var(--tooltip-fg);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  
+    min-width: 260px;
+    max-width: 420px;
+  
+    /* subtle border so it’s readable in both themes */
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.6);
+  
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    white-space: pre-line; /* keep your \n\n formatting */
+  
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease,
+      visibility 0.15s ease;
+  }
+  
+  /* show on hover & focus-within for accessibility */
+  .wrapper:hover .tooltip,
+  .wrapper:focus-within .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0.3rem);
+  }
+  

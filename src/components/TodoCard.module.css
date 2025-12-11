@@ -1,0 +1,85 @@
+.todoCard {
+  list-style: none;
+  cursor: grab;
+  display: flex;
+  position: relative; /* for delete button positioning */
+}
+
+.textarea {
+  width: 100%;
+  background-color: transparent;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  padding: 1rem;
+  border: 1px solid;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.textarea::placeholder{
+    color: var(--background);
+    opacity: 0.6;
+}
+
+.textareaReadOnly {
+  background-color: transparent;
+  color: var(--foreground);
+  cursor: grab;
+}
+
+.textareaEditing {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.todoCard:hover .textareaReadOnly {
+  border: 2px solid;
+}
+
+.todoCardHandle {
+  width: 1rem;
+  margin-right: 0.4rem;
+  cursor: grab;
+  background-image: radial-gradient(circle, #9ca3af 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/* delete button on each todo card */
+.todoDeleteButton {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  width: 1.4rem;
+  height: 1.4rem;
+
+  border-radius: 999px;
+  border: none;
+  background: rgba(148, 163, 184, 0.5); /* slate-400-ish */
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.12s ease, transform 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.todoCard:hover .todoDeleteButton {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.todoDeleteButton:hover {
+  background: rgba(220, 38, 38, 0.9); /* red-ish on hover */
+}
+
+.todoDeleteButton:focus-visible {
+  outline: 2px solid rgba(248, 250, 252, 0.9);
+  outline-offset: 2px;
+}

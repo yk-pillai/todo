@@ -1,0 +1,61 @@
+.todoSection {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0.8rem;
+  gap: 1rem;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* highlight section while dragging over it */
+.todoSectionOver {
+  background-color: rgba(59, 130, 246, 0.08);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+}
+
+.todoCardWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* title row: ADD + title + info icon */
+.title {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ADD button – extends common .pillButton */
+.addButton {
+  padding: 0.3rem 0.9rem;
+  border: 0.2rem dashed rgba(148, 163, 184, 0.7);
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--foreground);
+}
+
+.addButton:hover {
+  background: rgba(148, 163, 184, 0.18);
+  border-color: rgba(148, 163, 184, 0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+}
+
+.addButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
+}
+
+/* info icon */
+.infoIcon {
+  font-size: 0.85rem;
+  cursor: help;
+  opacity: 0.8;
+  padding: 0 0.15rem;
+  user-select: none;
+}
+
+.infoIcon:hover {
+  opacity: 1;
+}

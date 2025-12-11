@@ -1,14 +1,52 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background-light: #ffffff;
+  --foreground-light: #171717;
+  --background-dark: #0a0a0a;
+  --foreground-dark: #ededed;
+
+  /* actual used values (default = light) */
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
+
+  /* 🆕 tooltip colors (default = light theme) */
+  --tooltip-bg: #0f172a;   /* slate-900-ish */
+  --tooltip-fg: #f9fafb;   /* almost white */
 }
 
+/* Default to system theme when no explicit theme is set */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme]) {
+    --background: var(--background-dark);
+    --foreground: var(--foreground-dark);
+    color-scheme: dark;
+
+    /* 🆕 slightly lighter tooltip for dark mode */
+    --tooltip-bg: #1f2937; /* slate-800-ish */
+    --tooltip-fg: #e5e7eb;
   }
 }
+
+/* Explicit light theme overrides */
+:root[data-theme="light"] {
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
+  color-scheme: light;
+
+  --tooltip-bg: #0f172a;
+  --tooltip-fg: #f9fafb;
+}
+
+/* Explicit dark theme overrides */
+:root[data-theme="dark"] {
+  --background: var(--background-dark);
+  --foreground: var(--foreground-dark);
+  color-scheme: dark;
+
+  /* 🆕 softer than full black for dark theme */
+  --tooltip-bg: #1f2937; /* slate-800 */
+  --tooltip-fg: #e5e7eb;
+}
+
 
 html,
 body {
@@ -22,6 +60,9 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 * {
@@ -33,10 +74,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }
