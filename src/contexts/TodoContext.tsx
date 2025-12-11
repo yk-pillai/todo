@@ -11,9 +11,18 @@ import {
 
 const STORAGE_KEY = "todo-board:list:v1";
 
+const createId = () => {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+
+  // Fallback: not cryptographically secure, but good enough for IDs
+  return Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 9);
+};
+
 const initialList: Todo[] = [
   {
-    id: crypto.randomUUID(),
+    id: createId(),
     name: "",
     createdAt: Date.now(),
     updatedAt: Date.now(),
@@ -66,7 +75,7 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
   const addTodo = (name: Todo["name"]) => {
     const time = Date.now();
     const newTodo: Todo = {
-      id: crypto.randomUUID(),
+      id: createId(),
       name,
       createdAt: time,
       updatedAt: time,

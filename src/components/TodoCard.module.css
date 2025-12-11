@@ -14,9 +14,10 @@
   padding: 1rem;
   border: 1px solid;
   border-radius: 0 0.5rem 0.5rem 0;
+  font-size: 1rem;
 }
 
-textarea:disabled{
+.textarea:disabled{
   text-decoration: line-through;
 }
 
@@ -34,6 +35,10 @@ textarea:disabled{
 .textareaEditing {
   background-color: var(--foreground);
   color: var(--background);
+}
+
+.textareaDelete {
+  background-color: rgba(220, 38, 38, 0.9);
 }
 
 .todoCard:hover .textareaReadOnly {
@@ -79,14 +84,6 @@ textarea:disabled{
   transform: scale(1);
   background: rgba(220, 38, 38, 0.9)
 }
-
-/* .todoCard:hover .todoDeleteButton{
-  
-} */
-
-/* .todoDeleteButton:hover {
-  background: rgba(220, 38, 38, 0.9);
-} */
 
 .todoDeleteButton:focus-visible {
   outline: 2px solid rgba(248, 250, 252, 0.9);

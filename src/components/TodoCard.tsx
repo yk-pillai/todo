@@ -18,11 +18,47 @@ type TodoCardType = {
 
 const TODO_PLACEHOLDER = "Add your todo item here";
 
+/**
+ * Detect "fine" pointer (mouse/trackpad) vs "coarse" (touch).
+ * true  => desktop-style
+ * false => mobile/tablet-style
+ */
+const useIsPointerFine = () => {
+  const [isFine, setIsFine] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+
+    const mq = window.matchMedia("(pointer: fine)");
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      setIsFine(event.matches);
+    };
+
+    setIsFine(mq.matches);
+    mq.addEventListener("change", handleChange);
+
+    return () => {
+      mq.removeEventListener("change", handleChange);
+    };
+  }, []);
+
+  return isFine;
+};
+
 const TodoCard = ({ id, name, status }: TodoCardType) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const { editTodoName, deleteTodo } = useTodo();
+
   const [editMode, setEditMode] = useState(name === "");
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  // started life as a brand-new empty todo
+  const [isNew, setIsNew] = useState(name === "");
+  // last saved non-empty value (for restore on cancel)
+  const [lastValue, setLastValue] = useState(name);
+
+  const isPointerFine = useIsPointerFine();
 
   const {
     attributes,
@@ -46,11 +82,23 @@ const TodoCard = ({ id, name, status }: TodoCardType) => {
     el.style.height = `${el.scrollHeight}px`;
   };
 
+  // Desktop: double-click to enter edit mode
   const handleDoubleClick = () => {
+    if (!isPointerFine) return; // ignore dblclick on touch
     if (!inputRef.current) return;
-    inputRef.current.focus();
     setEditMode(true);
   };
+
+  // Desktop: focus textarea after entering edit mode
+  useEffect(() => {
+    if (!isPointerFine) return; // on mobile, let native tap focus
+    if (!editMode || !inputRef.current) return;
+
+    const el = inputRef.current;
+    el.focus();
+    const len = el.value.length;
+    el.setSelectionRange(len, len);
+  }, [editMode, isPointerFine]);
 
   const handleBlur = () => {
     if (!inputRef.current) return;
@@ -58,20 +106,37 @@ const TodoCard = ({ id, name, status }: TodoCardType) => {
 
     const trimmed = el.value.replace(/\n+$/g, "").trim();
 
-    // Delete on empty edit (fast path, no modal)
+    // Case 1: brand-new todo, still empty → delete silently (no modal)
+    if (trimmed === "" && isNew) {
+      deleteTodo(id);
+      return;
+    }
+
+    // Case 2: existing todo cleared to empty → ask for confirmation
     if (trimmed === "") {
       setConfirmOpen(true);
       return;
     }
 
+    // Normal save
     el.value = trimmed;
     autoSize();
     setEditMode(false);
+    setIsNew(false); // no longer "new"
+    setLastValue(trimmed); // remember last saved value
     editTodoName(id, trimmed);
   };
 
   const handleInput = () => {
     autoSize();
+  };
+
+  // Mobile: tap directly on textarea to edit (no readOnly gating)
+  const handleFocus = () => {
+    if (status === TODO_STATUS.COMPLETED) return;
+    if (!isPointerFine) {
+      setEditMode(true);
+    }
   };
 
   const handleDeleteClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -87,6 +152,14 @@ const TodoCard = ({ id, name, status }: TodoCardType) => {
 
   const handleCancelDelete = () => {
     setConfirmOpen(false);
+
+    // restore previous value if user tried to "delete by clearing"
+    if (!inputRef.current) return;
+    const el = inputRef.current;
+
+    el.value = lastValue;
+    autoSize();
+    setEditMode(false);
   };
 
   // Auto-size on mount
@@ -94,7 +167,7 @@ const TodoCard = ({ id, name, status }: TodoCardType) => {
     autoSize();
   }, []);
 
-  // Re-apply height after drag ends
+  // Re-apply height after drag ends / name changes
   useEffect(() => {
     if (!isDragging) {
       autoSize();
@@ -104,15 +177,28 @@ const TodoCard = ({ id, name, status }: TodoCardType) => {
   // Don’t start drag while editing
   const dragListeners = editMode ? {} : listeners;
 
+  // readOnly:
+  // - COMPLETED: always read-only
+  // - desktop (fine pointer): gated by editMode
+  // - mobile (coarse pointer): always editable except COMPLETED
+  const isReadOnly =
+    status === TODO_STATUS.COMPLETED ? true : isPointerFine ? !editMode : false;
+
+  const titleText = editMode
+    ? TODO_PLACEHOLDER
+    : isPointerFine
+    ? "Double-click to edit"
+    : "Tap to edit";
+
   return (
     <>
       <li
         ref={setNodeRef}
         style={style}
         className={styles.todoCard}
-        title={editMode ? TODO_PLACEHOLDER : "Double-click to edit"}
+        title={titleText}
         {...attributes}
-        {...dragListeners}
+        {...dragListeners} // 🔸 whole card is draggable when not editing
       >
         <div className={styles.todoCardHandle} />
 
@@ -122,13 +208,14 @@ const TodoCard = ({ id, name, status }: TodoCardType) => {
           rows={1}
           placeholder={TODO_PLACEHOLDER}
           onInput={handleInput}
-          onDoubleClick={handleDoubleClick}
+          onDoubleClick={isPointerFine ? handleDoubleClick : undefined}
+          onFocus={handleFocus}
           onBlur={handleBlur}
-          readOnly={!editMode}
-          autoFocus={editMode}
+          readOnly={isReadOnly}
+          autoFocus={name === ""} // new todos focus initially
           className={`${styles.textarea} ${
             editMode ? styles.textareaEditing : styles.textareaReadOnly
-          }`}
+          } ${confirmOpen ? styles.textareaDelete : ""}`}
           disabled={status === TODO_STATUS.COMPLETED}
         />
 

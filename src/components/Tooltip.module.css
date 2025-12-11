@@ -48,3 +48,10 @@
     transform: translate(-60%, 0.5rem);
   }
 }
+
+@media (max-width: 380px) {
+  .tooltip {
+    max-width: 320px;
+    min-width: 180px;
+  }
+}
