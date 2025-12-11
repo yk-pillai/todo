@@ -4,3 +4,10 @@
   height: auto;
   margin-top: 1rem;
 }
+
+@media (max-width: 768px) {
+  .todoBoard {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

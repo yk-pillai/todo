@@ -1,6 +1,6 @@
 "use client";
 
-import { Todo, TodoStatus } from "@/types/Todo.type";
+import { TODO_STATUS, Todo, TodoStatus } from "@/types/Todo.type";
 import styles from "./TodoCard.module.css";
 import { useRef, useState, useEffect, MouseEvent } from "react";
 import { useTodo } from "@/contexts/TodoContext";
@@ -18,7 +18,7 @@ type TodoCardType = {
 
 const TODO_PLACEHOLDER = "Add your todo item here";
 
-const TodoCard = ({ id, name }: TodoCardType) => {
+const TodoCard = ({ id, name, status }: TodoCardType) => {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const { editTodoName, deleteTodo } = useTodo();
   const [editMode, setEditMode] = useState(name === "");
@@ -60,7 +60,7 @@ const TodoCard = ({ id, name }: TodoCardType) => {
 
     // Delete on empty edit (fast path, no modal)
     if (trimmed === "") {
-      deleteTodo(id);
+      setConfirmOpen(true);
       return;
     }
 
@@ -129,6 +129,7 @@ const TodoCard = ({ id, name }: TodoCardType) => {
           className={`${styles.textarea} ${
             editMode ? styles.textareaEditing : styles.textareaReadOnly
           }`}
+          disabled={status === TODO_STATUS.COMPLETED}
         />
 
         <button

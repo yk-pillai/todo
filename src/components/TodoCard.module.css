@@ -16,6 +16,10 @@
   border-radius: 0 0.5rem 0.5rem 0;
 }
 
+textarea:disabled{
+  text-decoration: line-through;
+}
+
 .textarea::placeholder{
     color: var(--background);
     opacity: 0.6;
@@ -54,7 +58,7 @@
 
   border-radius: 999px;
   border: none;
-  background: rgba(148, 163, 184, 0.5); /* slate-400-ish */
+  background: rgba(148, 163, 184, 0.5); 
   color: #ffffff;
   font-size: 1rem;
   line-height: 1;
@@ -73,11 +77,16 @@
 .todoCard:hover .todoDeleteButton {
   opacity: 1;
   transform: scale(1);
+  background: rgba(220, 38, 38, 0.9)
 }
 
-.todoDeleteButton:hover {
-  background: rgba(220, 38, 38, 0.9); /* red-ish on hover */
-}
+/* .todoCard:hover .todoDeleteButton{
+  
+} */
+
+/* .todoDeleteButton:hover {
+  background: rgba(220, 38, 38, 0.9);
+} */
 
 .todoDeleteButton:focus-visible {
   outline: 2px solid rgba(248, 250, 252, 0.9);

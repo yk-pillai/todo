@@ -59,8 +59,9 @@ const TodoSection = ({ status, title, todos }: TodoSectionType) => {
           </button>
         )}
 
-        <span>{title}</span>
-
+        <span>
+          {title} ({todos.length})
+        </span>
         {isTodoSection && (
           <Tooltip content={TODO_HELP_TEXT}>
             <span
